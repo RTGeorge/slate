@@ -2,7 +2,7 @@ FROM ruby:latest as builder
 WORKDIR /usr/src/app
 COPY ./ /usr/src/app
 ARG BUILD_NUMBER
-RUN apt-get update
+RUN apt-get update && apt-get install -y nodejs
 CMD bundle install && bundle exec middleman build --clean
 
 FROM nginx:stable-alpine
