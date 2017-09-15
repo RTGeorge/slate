@@ -1,7 +1,8 @@
 #!/bin/bash
 
 docCategories=(_objects _operations)
-docRepos=("ssh://git@stash.ecovate.com/fox/foxden-js.git")
+#docRepos=("ssh://git@stash.ecovate.com/fox/foxden-js.git")
+docRepos=("https://github.com/RTGeorge/docs_ios.git" "https://github.com/RTGeorge/docs_js.git")
 
 sedExec=sed
 if [ "$(uname -s)" == 'Darwin' ]; then
@@ -29,6 +30,7 @@ function obtain_doc_src {
     git clone ${1} ${repoPath}
   fi
   rsync -av ${repoPath}/docs ${inputPath}/includes/${repoName}/ > /dev/null
+  rsync -av ${outputPath}/ ${inputPath}/ > /dev/null
 }
 
 function extract_headers {
@@ -52,12 +54,13 @@ function parse_includes {
   rm -f ${headerFile}
   rm -f ${outputFile}
 
-  extract_headers "${inputFileList}" > ${headerFile}
+  extract_headers "${inputFileList}" "${inputPath}/${1}*md" > ${headerFile}
   while read line; do
     echo ${line} >> ${outputFile}
     for fily in ${inputFileList}; do
       extract_section "${line}" "${fily}" >> ${outputFile}
     done
+    extract_section "${line}" "${inputPath}/${1}*md" >> ${outputFile}
   done < ${headerFile}
 }
 
@@ -68,6 +71,6 @@ for repo in ${docRepos[*]}; do
   obtain_doc_src ${repo}
 done
 
-for category in ${docCategoris[*]}; do
+for category in ${docCategories[*]}; do
   parse_includes ${category}
 done

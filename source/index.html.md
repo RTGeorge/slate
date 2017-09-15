@@ -4,6 +4,7 @@ title: FoxDen API Reference
 language_tabs: # must be one of https://git.io/vQNgJ
   - javascript
   - html
+  - swift
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -11,9 +12,7 @@ toc_footers:
 
 includes:
   - objects
-  - objects1
   - operations
-  - errors
 
 search: true
 ---
