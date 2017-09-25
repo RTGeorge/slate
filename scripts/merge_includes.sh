@@ -1,6 +1,5 @@
 #!/bin/bash
 
-docCategories=(_objects _operations)
 #docRepos=("ssh://git@stash.ecovate.com/fox/foxden-js.git")
 docRepos=("https://github.com/RTGeorge/docs_ios.git" "https://github.com/RTGeorge/docs_js.git")
 
@@ -12,6 +11,13 @@ if ! which $sedExec > /dev/null 2>&1; then
   echo 'Can't find GNU `sed` executable.'
   echo 'If on OS X, try `brew install gnu-sed`.
   echo 'Aborting merge.'
+  exit 1
+fi
+
+docCategories=($(${sedExec} -n '/^includes:$/,/^$/p' source/index.html.md | ${sedExec} '1d;$d' | awk '{print $2}' 2> /dev/null))
+if [ "${#docCategories[@]}" == "0" ]; then
+  echo 'Unable to extract categories from source/index.html.md'
+  echo 'exiting'
   exit 1
 fi
 
@@ -72,5 +78,5 @@ for repo in ${docRepos[*]}; do
 done
 
 for category in ${docCategories[*]}; do
-  parse_includes ${category}
+  parse_includes "_${category}"
 done
